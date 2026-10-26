@@ -225,15 +225,41 @@ if (button) {
     const reply = addMessage("assistant", "Thinking…");
     const content = `You are Kairo, a helpful coding assistant. Explain clearly and be careful with changes. The user is editing ${activeFile}.\n\nCurrent file (${activeFile}):\n${currentValue().slice(0,12000)}\n\nUser request:\n${text}`;
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: [{ role: "user", content }] })
+      const ws = new WebSocket("wss://multiple-interracial-sing-attachment.trycloudflare.com");
+      const answer = await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          ws.close();
+          reject(new Error("AI request timed out"));
+        }, 200000);
+
+        ws.onopen = () => ws.send(JSON.stringify({
+          messages: [{ role: "user", content }]
+        }));
+
+        ws.onmessage = event => {
+          const data = JSON.parse(event.data);
+          if (data.error) {
+            clearTimeout(timeout);
+            ws.close();
+            reject(new Error(data.error));
+          } else if (data.content !== undefined) {
+            clearTimeout(timeout);
+            ws.close();
+            resolve(data.content);
+          }
+        };
+
+        ws.onerror = () => {
+          clearTimeout(timeout);
+          reject(new Error("WebSocket connection failed"));
+        };
+        ws.onclose = () => {
+          clearTimeout(timeout);
+        };
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || data.detail || "AI request failed");
-      reply.lastChild.textContent = data.answer || "(No response returned)";
+      reply.lastChild.textContent = answer || "(No response returned)";
     } catch (err) {
-      reply.lastChild.textContent = "I couldn't reach the local AI server. Start Ollama and run `python3 server.py` on Vega. Details: " + err.message;
+      reply.lastChild.textContent = "Kairo connection failed: " + err.message;
     }
     $("chatMessages").scrollTop = $("chatMessages").scrollHeight;
   }
