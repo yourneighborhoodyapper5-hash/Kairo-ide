@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111318">
+  <title>Kairo IDE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">K</span><span>Kairo <b>IDE</b></span></div>
+    <div class="project-name"><i class="fa-regular fa-folder-open"></i> <span id="projectLabel">my-project</span></div>
+    <div class="top-actions">
+      <button id="exportBtn" class="quiet"><i class="fa-solid fa-download"></i> Export</button>
+      <button id="previewBtn" class="primary"><i class="fa-solid fa-play"></i> Preview</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="activitybar" aria-label="Workspace tools">
+      <button class="activity active" title="Explorer"><i class="fa-regular fa-folder-open"></i></button>
+      <button class="activity" id="toggleAi" title="AI Assistant"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+      <div class="activity-spacer"></div>
+      <button class="activity" id="aboutBtn" title="About"><i class="fa-regular fa-circle-question"></i></button>
+    </aside>
+
+    <aside class="sidebar">
+      <div class="sidebar-heading"><span>EXPLORER</span><div>
+        <button id="newFileBtn" title="New file"><i class="fa-regular fa-file"></i><i class="fa-solid fa-plus tiny"></i></button>
+        <button id="resetBtn" title="Reset starter files"><i class="fa-solid fa-rotate-left"></i></button>
+      </div></div>
+      <div class="project-root"><i class="fa-solid fa-chevron-down"></i><i class="fa-regular fa-folder-open"></i> MY-PROJECT</div>
+      <div id="fileTree" class="file-tree"></div>
+      <div class="sidebar-bottom"><span class="status-dot"></span> Local workspace</div>
+    </aside>
+
+    <section class="editor-area">
+      <div class="tabs" id="tabs"><div class="tab active"><i class="fa-brands fa-html5"></i> index.html</div></div>
+      <div class="editor-toolbar"><span id="breadcrumb">my-project / index.html</span><span id="saveState">Saved locally</span></div>
+      <div id="editor"></div>
+      <div id="fallbackEditor" hidden><textarea id="plainEditor" spellcheck="false" aria-label="Code editor"></textarea></div>
+      <footer class="statusbar"><span id="languageStatus">HTML</span><span id="cursorStatus">Ln 1, Col 1</span><span><i class="fa-solid fa-code-branch"></i> main</span><span class="status-right">Kairo IDE · starter</span></footer>
+    </section>
+
+    <aside class="ai-panel" id="aiPanel">
+      <div class="panel-heading"><div><i class="fa-solid fa-wand-magic-sparkles"></i> Kairo Assistant</div><button id="closeAi" title="Close assistant"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="ai-context"><span class="status-dot"></span> Local model · <code>qwen3:4b</code></div>
+      <div id="chatMessages" class="chat-messages">
+        <div class="welcome-card"><div class="sparkle">✳</div><h3>What are we building?</h3><p>Ask for an explanation, debugging help, or ideas for the file you have open.</p></div>
+      </div>
+      <form id="chatForm" class="chat-form">
+        <textarea id="chatInput" rows="3" placeholder="Ask Kairo about your code..." aria-label="Message Kairo"></textarea>
+        <div class="chat-form-bottom"><span>Enter to send · Shift+Enter for newline</span><button class="send-btn" type="submit" aria-label="Send message"><i class="fa-solid fa-arrow-up"></i></button></div>
+      </form>
+    </aside>
+  </main>
+  <section class="preview-dock" id="previewDock" hidden>
+    <div class="preview-heading"><span><i class="fa-solid fa-globe"></i> Preview</span><button id="closePreview"><i class="fa-solid fa-xmark"></i></button></div>
+    <iframe id="previewFrame" title="Project preview" sandbox="allow-scripts"></iframe>
+  </section>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
